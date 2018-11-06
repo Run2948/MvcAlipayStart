@@ -6,7 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_doc", "_doc", "{1054867B-1E18-44C3-A8AD-7E8B54F6863E}"
 	ProjectSection(SolutionItems) = preProject
 		1.png = 1.png
-		doc\ReadMe.md = doc\ReadMe.md
+		ReadMe.md = ReadMe.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{78F9ECDC-BDDE-467A-9F4F-A46001B73C45}"

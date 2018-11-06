@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
+using Autofac.Integration.Mvc;
 using PaySharp.Alipay;
 using PaySharp.Core;
 using PaySharp.Core.Mvc;
@@ -20,8 +21,7 @@ namespace AlipayDemo
 
             var containerBuilder = new ContainerBuilder();
 
-            
-            PaySharpConfig.Register(typeof(MvcApplication), containerBuilder, a =>
+            containerBuilder.Register(a =>
             {
                 var gateways = new Gateways();
                 //gateways.RegisterAlipay();
@@ -41,7 +41,13 @@ namespace AlipayDemo
                 });
 
                 return gateways;
-            });
+
+            }).As<IGateways>().InstancePerRequest();
+
+            containerBuilder.RegisterControllers(typeof(MvcApplication).Assembly);
+
+            var container = containerBuilder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
     }
 }

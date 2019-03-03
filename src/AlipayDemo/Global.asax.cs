@@ -26,13 +26,23 @@ namespace AlipayDemo
                 var gateways = new Gateways();
                 //gateways.RegisterAlipay();
 
+                /** 支付宝 - 沙箱环境使用说明
+                 * https://alipay.open.taobao.com/doc2/detail.htm?treeId=200&articleId=105311&docType=1
+                 * 1. 生成并上传RSA2(SHA256)的应用公钥；配置RSA2(SHA256)的应用公钥后，不需要配置RSA(SHA1)密钥；
+                 * 2. 编写代码时，请将
+                 *   a.请求网关修改为：https://openapi.alipaydev.com/gateway.do 此处新版本应该修改为 https://openapi.alipaydev.com
+                 *   b.appid切换为沙箱的appid
+                 *   c.签名方式使用RSA2
+                 *   d.应用私钥使用第1步生成的RSA2(SHA256)的私钥(请根据开发语言进行选择原始或pkcs8格式)
+                 *   e.支付宝公钥切换为第1步配置后应用公钥后，点击查看支付宝公钥看到的公钥
+                 */
                 var alipayMerchant = new PaySharp.Alipay.Merchant
                 {
-                    AppId = "2016081600256163",
-                    NotifyUrl = "http://localhost:57618/Notify",
-                    ReturnUrl = "http://localhost:57618/Notify",
-                    AlipayPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsW6+mN2E3Oji2DPjSKuYgRzK6MlH9q6W0iM0Yk3R0qbpp5wSesSXqudr2K25gIBOTCchiIbXO7GXt/zEdnhnC32eOaTnonDsnuBWIp+q7LoVx/gvKIX5LTHistCvGli8VW4EDGsu2jAyQXyMPgPrIz+/NzWis/gZsa4TaqVY4SpWRuSgMXxleh2ERB6k0ijK0IYM+Cv5fz1ZPDCgk7EbII2jk2fDxtlMLoN5UYEJCcD8OUyivm3Hti3u1kPolckCCf0xk+80g/4EdmzFAffsVgPeXZrkm5EIuiTTOIeRHXlTg3HtkkCw2Wl0CpYSKBr9Vzv7x0gNvb1wnXPmBJNRgQIDAQAB",
-                    Privatekey = "MIIEpAIBAAKCAQEAyC43UbsE5XZ2Pmqg1YgzeCqAMk4HOH8fYHslseeSgKxyDjybjqM0yjGIJry1FRmVvLnY7v8jURgwr7d/pDCSRdoHa6zaxuSzg0OlieNmujae34YZ54PmFxULZW0BHSdzmx3OIYK2GarRECkds531ZzpbLdRXqsxQf5G26JZLIFxmNuh/VjBjJ6Hic1WOFT+FCYyi8om+LkPn3jELeA7LPLXzFqzzxx0vo4yiAePrsX5WucWxf+Y8rZoDhRIy/cPtQECXi9SiAWOJe/82JqjVjfpowf3QN7UJHsA82RBloAS4lvvDGJA7a+8DDlqpqPer8cS41Dv5r39iqtJUybDqoQIDAQABAoIBAHi39kBhiihe8hvd7bQX+QIEj17G02/sqZ1jZm4M+rqCRB31ytGP9qvghvzlXEanMTeo0/v8/O1Qqzusa1s2t19MhqEWkrDTBraoOtIWwsKVYeXmVwTY9A8Db+XwgHV2by8iIEbxLqP38S/Pu8uv/GgONyJCJcQohnsIAsfsqs2OGggz+PplZaXJfUkPomWkRdHM9ZWWDLrCIlmRSHLmhHEtFJaXD083kqo437qra58Amw/n+2gH57utbAQ9V3YQFjD8zW511prC+mB6N/WUlaLstkxswGJ16obEJfQ0r8wYHx14ep6UKGyi3YXlMHcteI8gz+uFx4RuVV9EotdXagECgYEA7AEz9oPFYlW1H15OkDGy8yBnpJwIBu2CQLxINsxhrLIAZ2Bgxqcsv+D9CpnYCBDisbXoGoyMK6XaSypBMRKe2y8yRv4c+w00rcKHtGfRjzSJ5NQO0Tv+q8vKY+cd6BuJ6OUQw82ICLANIfHJZNxtvtTCmmqBwSJDpcQJQXmKXTECgYEA2SQCSBWZZONkvhdJ15K+4IHP2HRbYWi+C1OvKzUiK5bdJm77zia4yJEJo5Y/sY3mV3OK0Bgb7IAaxL3i0oH+WNTwbNoGpMlYHKuj4x1453ITyjOwPNj6g27FG1YSIDzhB6ZC4dBlkehi/7gIlIiQt1wkIZ+ltOqgI5IqIdXoSHECgYB3zCiHYt4oC1+UW7e/hCrVNUbHDRkaAygSGkEB5/9QvU5tK0QUsrmJcPihj/RUK9YW5UK7b0qbwWWsr/dFpLEUi8GWvdkSKuLprQxbrDN44O96Q5Z96Vld9WV4DtJkhs4bdWNsMQFzf4I7D9PuKeJfcvqRjaztz6nNFFSqcrqkkQKBgQCJKlUCohpG/9notp9fvQQ0n+viyQXcj6TVVOSnf6X5MRC8MYmBHTbHA8+59bSAfanO/l7muwQQro+6TlUVMyaviLvjlwpxV/sACXC6jCiO06IqreIbXdlJ41RBw2op0Ss5gM5pBRLUS58V+HP7GBWKrnrofofXtAq6zZ8txok4EQKBgQCXrTeGMs7ECfehLz64qZtPkiQbNwupg938Z40Qru/G1GR9u0kmN7ibTyYauI6NNVHGEZa373EBEkacfN+kkkLQMs1tj5Zrlw+iITm+ad/irpXQZS/NHCcrg6h82vu0LcgiKnHKlmW6K5ne0w4LqmsmRCm7JdJjt9WlapAs0ticiw=="
+                    AppId = "2016092800616303",
+                    NotifyUrl = "http://localhost:63988/Notify",
+                    ReturnUrl = "http://localhost:63988/Notify",
+                    AlipayPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5jQk+Jhg20hHmqYf+5HOsRHGYr2UdwmQJMHKNfl2nXvvkRvaY16O9/Ws9veCL6AaWHEzSS5TT3TTnykDC7uG5x7GXVSDlA0wpxWIME9ieglR6+gFKx2Df9mu7p9rcpgraZFidOQmsMGmvFyZf7TJbtKAaj6mCzsHj2dGaApgTokcyg8OFz9rwf+MhMI9tlNJ9+82KtkGhS8MlfSmMZyIUJhQRVhT+G9uGM7A0hQ9hn+q/s3mjQ9XTzWprvXII6Mu64CFV/DHh4jesILUTpB32d4NKhgw2LNmgvaa7+Ym6ETwoB+8kKAM6g+I6saMutFWihme2B1WIX7xv/pJHLG9QQIDAQAB",
+                    Privatekey = "MIIEpAIBAAKCAQEA4TxEpvAVVvl42s5iAdr/kSj0rCiESP1DTSpIBOAIuu8PC8nkNnXMEnlKqsKOAWrEYIEqkRSfpEHIW08NzDPEfCm1IlNVRzz7UII8zM+MljVO8ppWlxNShgU7aEgZaBkx1ucgkisUmrnGnHOXR7dEkUGfwbi7kzQD0kPXM7rzBB7CuItAwTemMuA6BiVlUKIZIoljP4pkM/BilK8k+Ag//msFcH+G5hjdF7gE6idLHQOiTLuZmjOdHW6QWy0qFEfbeX4GXC1ERY5njcL7zlLbMwio0Hj+dg7FKbQdiSxLRl39PiRrGydzQHCYJ/y6x6PI4ctZI8RE9c8Lh9XAOOAktQIDAQABAoIBAQCNJCMxKUl2Eya0lpe76ew0nqGUMF+VDX/bHx+6TlmqKpwXGxCzP+X9vZwYnYo3QRyGDOsLtwzC9aYD8eoHiHkcBVbIh8fsuD4UGUjYX0cN6aHrTOPuD+GqsiSkGGozXXZp4LP8ZJqoyrm22Ih4HFQPYjwmPQjuGa47WN/GPuSCM0eFQC5BFlhnCwBDDOY6pciEPe0tDCSDHwBNRtcFgqXtJZGTiAP1hMxslb4V2PrN0XyyC52tpRGE6TCTq6gNt1xaBySjTvIG7CAz4EWOjf9LEqr5ggn6EuRKp470hOkhg1EUaMTqtvO4zAilkoFYRMwrbxn3NoRk1r9w83VlDbcRAoGBAPHwsudjw+ixbEVD8jt4XUiJdZ10gwpGsmdP7ExA3ohuNyXHebBZXpnFdq9j56RpKE/dFJlHBTalKdPlS18xuB6KA9UCd73LMTIgqihnmYlSYb6G2D2UGJtfqWPVEr9NZGNwlA76dtyx7MU/bmxx9NLUFvyVEcCIK8gVRQtvtmOTAoGBAO5TDg+AeyLt+HYHqNH6s/O3uywhMXr+f+lKDXKurMZmhAU0UhC2NqXaVTcISV8ZT/lGL0srcaDUHAJe6oVvPoOnHwqcvCZFHbTj2xrFOj5MKAMSN7vLnXUUvvCu3UuaJbF+AxlbYscuGH9xhmiZHgP9htkKKzOYbibZjPORKpOXAoGAXHvCJ6l/Tgfkd2XNxuXv4raI+zN6lAcKU2u9zDhP2J8o/YwO/FZtTyKoh8sM1VBNVJoSMbVwTL8+Cf3wnecHlsTzSg2zcB2oJJ1P7joL+u4+5vHs3z0pWttqiPr+O5p98XUrY75iiWKKO6xPrayyBZWFY/An5Q0oj0dyKTj+43kCgYEAh7pta460kjQNKMs77jplegvNYViWIYIHvwkZl5K7e1KvJXeitTnQ7avmlCz3/F0iGslJ7fmUARBL013TGqM8ayYmm5if3vvF61tJUXm5rfkZYIZjj2RrDF8AT3qHNaNYjDlD8pEFNIKgGRTCg5eQbJ1aywjribrqIN4NVDn8kYkCgYBvyCnGZVrSfg9fBm2M+ttgcXEDAM3jebiZi20VzHcwfP15OhEbfOIWOj0c54PyZU0sF0/uMvRNBFwbLMfk6oVP2KE/JVnxMt2kOYJnUMhC5Oefz+GiaRYUTamyGmJAVxwyeUwAGfPiaqhAMDbbcyMlwnF1OCS0jmUK66aZOcAOmQ=="
                 };
 
                 gateways.Add(new AlipayGateway(alipayMerchant)

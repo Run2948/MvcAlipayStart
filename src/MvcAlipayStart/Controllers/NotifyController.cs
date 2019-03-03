@@ -30,7 +30,7 @@ namespace MvcAlipayStart.Controllers
             
             if (isRedirect)
             {
-                Response.Redirect("https://github.com/Varorbc/PaySharp");
+                Response.Redirect("http://localhost:64852/");
             }
         }
 
